@@ -6,46 +6,52 @@ import interfaces.Types;
 import java.lang.module.FindException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 public class Autobus implements TransportType {
     private String name;
     private final Types type;
-    private int number;
+    private final int number;
 
     private int amountOfStations;
 
     private final PublicTransportationSystem systemName;
 
-    private ArrayList<String> Stations;
+    private final List<Station> Stations;
 
-    private Hashtable<Station, Integer> stationsOnLine;
+    private final Hashtable<Station, Integer> stationsOnLine;
 
     public Autobus(PublicTransportationSystem system) {
         this.type = Types.BUS;
         this.name = name();
         this.systemName = system;
-        number();
+        this.number = setNumber(system);
         this.amountOfStations = 0;
+        this.Stations = new ArrayList<>();
+        this.stationsOnLine = new Hashtable<>();
     }
 
 
-    public Hashtable<Station, Integer> addStationOnLine(Station station) {
+    public void addStationOnLine(Station station) {
         if (!stationsOnLine().containsKey(station) && checkIfLineStationSameType(this, station)) {
             this.amountOfStations++;
             this.stationsOnLine.put(station, this.amountOfStations);
-            station.addLines(this.number);
-            return stationsOnLine;
+            station.addLines(this);
         }
-        throw new FindException("Station cannot be added");
+        else {
+            throw new FindException("Station cannot be added");
+        }
     }
     public Hashtable<Station, Integer> delStationOnLine(Station station) {
         if (stationsOnLine().containsKey(station)) {
             this.amountOfStations--;
             this.stationsOnLine.remove(station);
-            station.delLines(this.number);
+            station.delLines(this);
             return stationsOnLine;
         }
-        throw new FindException("Station is not present on this line");
+        else {
+            throw new FindException("Station is not present on this line");
+        }
     }
     @Override
     public String name() {
@@ -56,12 +62,12 @@ public class Autobus implements TransportType {
     }
 
     @Override
-    public void setNumber(PublicTransportationSystem system) {
+    public int setNumber(PublicTransportationSystem system) {
         int number = 1;
         int i = 0;
         while (i < 1000) {
-            if (this.systemName.getLines().containsValue(number)) {
-                this.number = number;
+            if (this.systemName.getLines() == null || !this.systemName.getLines().contains(this)) {
+                return number;
             } else {
                 number++;
                 i++;
@@ -71,7 +77,7 @@ public class Autobus implements TransportType {
     }
 
     @Override
-    public ArrayList<String> stationNames() {
+    public List<Station> stationNames() {
         return Stations;
     }
 
@@ -80,12 +86,17 @@ public class Autobus implements TransportType {
         return stationsOnLine;
     }
     @Override
-    public boolean checkIfLineStationSameType(Autobus bus, Station station){
-        return bus.type.equals(station.type());
+    public boolean checkIfLineStationSameType(TransportType bus, Station station){
+        return bus.type().equals(station.type());
     }
     @Override
     public PublicTransportationSystem system() {
         return systemName;
+    }
+
+    @Override
+    public int compareTo(TransportType trType) {
+        return Integer.compare(this.stationsOnLine.size(), trType.stationsOnLine().size());
     }
 
     @Override
@@ -109,16 +120,16 @@ public class Autobus implements TransportType {
     public int getNumber() {
         return number;
     }
-    public ArrayList<String> getStations() {
+    public List<Station> getStations() {
         return Stations;
     }
 
-    public void delStations(String station){
+    public void delStations(Station station){
         this.Stations.remove(station);
     }
 
     public String toString(){
-        return this.type + " number " + this.number + " serving " + this.stationsOnLine;
+        return this.type + " number " + this.number + " serving " + this.stationsOnLine.size() + " stations";
     }
 
 }

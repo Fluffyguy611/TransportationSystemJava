@@ -1,33 +1,42 @@
 package TransportClasses;
 import interfaces.System;
+import interfaces.TransportType;
 import interfaces.Types;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 
 public class PublicTransportationSystem implements System{
     private final String name;
-    private ArrayList<Types> TransportTypes;
-    private HashMap<String, Integer> lines;
-    private HashMap<String, ArrayList<Integer>> Stations;
+    private final ArrayList<Types> TransportTypes;
+    private final List<TransportType> lines;
+    private final HashMap<Station, List<TransportType>> Stations;
 
-    private Autobus bus;
+    private List<TransportType> AllLines;
     public PublicTransportationSystem(String name) {
         this.name = name;
+        this.TransportTypes = new ArrayList<>();
+        this.lines = new ArrayList<TransportType>();
+        this.Stations = new HashMap<Station, List<TransportType>>();
     }
 
-    public void addLinesBus(String name, Autobus bus){
-        this.lines.put(name, bus.getNumber());
+    public void addLines(TransportType vehicle){
+        this.lines.add(vehicle);
+        if(!this.TransportTypes.contains(vehicle.type())){
+            this.TransportTypes.add(vehicle.type());
+        }
     }
-    public void delLines(String name, Autobus bus){
-        this.lines.remove(name, bus.getNumber());
+    public void delLines(TransportType vehicle){
+        this.lines.remove(vehicle);
     }
-    public void addStation(String name, ArrayList<Integer> lines){
-        this.Stations.put(name, lines);
+    public void addStation(Station station){
+        this.Stations.put(station, station.getLines());
     }
-    public void delStations(String name){
-        this.Stations.remove(name);
+    public void delStations(Station station){
+        this.Stations.remove(station);
     }
 
     @Override
@@ -41,17 +50,23 @@ public class PublicTransportationSystem implements System{
     }
 
     @Override
-    public HashMap<String, Integer> getLines() {
+    public List<TransportType> getLines() {
         return this.lines;
     }
 
     @Override
-    public HashMap<String, ArrayList<Integer>> getStationNames() {
+    public HashMap<Station, List<TransportType>> getStationNames() {
         return Stations;
+    }
+
+    @Override
+    public int compareTo(System system) {
+        return Integer.compare(this.lines.size() + this.Stations.size(),
+                system.getLines().size()+system.getStationNames().size());
     }
 
     public String toString(){
         return this.name + " having " + this.TransportTypes + " and " + this.lines.size()
-                + " amount of lines and " + this.Stations.size() + " amount of stations";
+                + " lines and " + this.Stations.size() + " stations";
     }
 }

@@ -4,23 +4,25 @@ import TransportClasses.Autobus;
 import TransportClasses.PublicTransportationSystem;
 import TransportClasses.Station;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 public interface TransportType {
     public String name();
     public Types type();
     public int number();
 
-    void setNumber(PublicTransportationSystem system);
+    int setNumber(PublicTransportationSystem system);
 
-    public ArrayList<String> stationNames();
+    public List<Station> stationNames();
 
     public Hashtable<Station, Integer> stationsOnLine();
 
-    boolean checkIfLineStationSameType(Autobus bus, Station station);
+    boolean checkIfLineStationSameType(TransportType bus, Station station);
 
     public PublicTransportationSystem system();
+
+    public int compareTo(TransportType trType);
 
 
 }

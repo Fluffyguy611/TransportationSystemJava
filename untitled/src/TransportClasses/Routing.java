@@ -1,23 +1,29 @@
 package TransportClasses;
 
+import interfaces.TransportType;
+
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Routing {
 
-    public void routingBetweenStations(Station station1, Station station2) {
-        ArrayList<Integer> lines1 = station1.getLines();
-        ArrayList<Integer> lines2 = station2.getLines();
+    public static String routingBetweenStations(Station station1, Station station2) {
+        List<TransportType> lines2 = station2.getLines();
+        List<TransportType> lines1 = station1.getLines();
+        Iterator<TransportType> lineIterator = lines2.iterator();
         if (isStationSameType(station1, station2)) {
-            for (int line : lines1) {
-                if (lines2.contains(line)) {
-                    System.out.println("Routing between: " + station1 + " " + station2 + "possible via line" + line);
-                    return;
+            for(int i=0; i<lines2.size();i++){
+                if (lines2.contains(lines1.get(i)))
+                {
+                    return ("Routing between: " + station1.getName() + " and " + station2.getName()
+                            + " possible via line " + lineIterator.next().name());
                 }
             }
         }
-        System.out.println("Routing not possible");
+        return ("Routing not possible");
     }
-    public boolean isStationSameType(Station station1, Station station2){
+    public static boolean isStationSameType(Station station1, Station station2){
         return station1.type().equals(station2.type());
     }
 }
