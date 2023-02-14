@@ -4,20 +4,10 @@ import interfaces.Types;
 
 import java.util.ArrayList;
 
-public class UndergroundStation extends Station{
-    private String name;
-    private Types type;
+public final class UndergroundStation extends Station{
 
-    private ArrayList<String> accessPoints;
+    private final ArrayList<String> accessPoints = new ArrayList<>();
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public Types getType() {
-        return type;
-    }
 
     public ArrayList<String> getAccessPoints() {
         return accessPoints;
@@ -36,3 +26,4 @@ public class UndergroundStation extends Station{
         super(name, type);
     }
 }
+

@@ -11,22 +11,22 @@ import java.util.Objects;
 
 public class PublicTransportationSystem implements System{
     private final String name;
-    private final ArrayList<Types> TransportTypes;
+    private final ArrayList<Types> transportTypes;
     private final List<TransportType> lines;
     private final HashMap<Station, List<TransportType>> Stations;
 
     private List<TransportType> AllLines;
     public PublicTransportationSystem(String name) {
         this.name = name;
-        this.TransportTypes = new ArrayList<>();
+        this.transportTypes = new ArrayList<>();
         this.lines = new ArrayList<TransportType>();
         this.Stations = new HashMap<Station, List<TransportType>>();
     }
 
     public void addLines(TransportType vehicle){
         this.lines.add(vehicle);
-        if(!this.TransportTypes.contains(vehicle.type())){
-            this.TransportTypes.add(vehicle.type());
+        if(!this.transportTypes.contains(vehicle.type())){
+            this.transportTypes.add(vehicle.type());
         }
     }
     public void delLines(TransportType vehicle){
@@ -46,7 +46,7 @@ public class PublicTransportationSystem implements System{
 
     @Override
     public ArrayList<Types> getTransportationTypes() {
-        return this.TransportTypes;
+        return this.transportTypes;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class PublicTransportationSystem implements System{
     }
 
     public String toString(){
-        return this.name + " having " + this.TransportTypes + " and " + this.lines.size()
+        return this.name + " having " + this.transportTypes + " and " + this.lines.size()
                 + " lines and " + this.Stations.size() + " stations";
     }
 }

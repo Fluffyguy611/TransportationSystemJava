@@ -7,7 +7,7 @@ import interfaces.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Station implements StationType {
+public abstract class Station implements StationType {
     private final String name;
     private final List<TransportType> lines;
     private final Types type;

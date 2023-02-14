@@ -1,10 +1,10 @@
 package tests;
 
 import TransportClasses.Autobus;
+import TransportClasses.AutobusStation;
 import TransportClasses.PublicTransportationSystem;
 import TransportClasses.Station;
 import interfaces.Types;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ class PublicTransportationSystemTest {
     @Test
     void addStation() {
         PublicTransportationSystem system = new PublicTransportationSystem("Gdanskie autobusy");
-        Station station = new Station("Wojska polskiego", Types.BUS);
+        AutobusStation station = new AutobusStation("Wojska polskiego");
         system.addStation(station);
         Assertions.assertNotNull(system.getStationNames());
         Assertions.assertEquals(1, system.getStationNames().size());
@@ -44,7 +44,7 @@ class PublicTransportationSystemTest {
     @Test
     void delStations() {
         PublicTransportationSystem system = new PublicTransportationSystem("Gdanskie autobusy");
-        Station station = new Station("Wojska polskiego", Types.BUS);
+        AutobusStation station = new AutobusStation("Wojska polskiego");
         system.addStation(station);
         system.delStations(station);
         Assertions.assertEquals(0, system.getStationNames().size());
@@ -64,7 +64,7 @@ class PublicTransportationSystemTest {
         PublicTransportationSystem system2 = new PublicTransportationSystem("Gdanskie pociągi");
         Autobus bus = new Autobus(system1);
         Autobus bus2 = new Autobus(system1);
-        Station station = new Station("Wojska polskiego", Types.BUS);
+        AutobusStation station = new AutobusStation("Wojska polskiego");
         system1.addLines(bus);
         system1.addLines(bus2);
         system1.addStation(station);
@@ -77,7 +77,7 @@ class PublicTransportationSystemTest {
     void systemToString() {
         PublicTransportationSystem system1 = new PublicTransportationSystem("Gdanskie autobusy");
         Autobus bus = new Autobus(system1);
-        Station station = new Station("Wojska polskiego", Types.BUS);
+        AutobusStation station = new AutobusStation("Wojska polskiego");
         system1.addLines(bus);
         system1.addStation(station);
 

@@ -4,9 +4,12 @@ import interfaces.TransportType;
 import interfaces.Types;
 
 import java.lang.module.FindException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
+
+import static java.util.Collections.*;
 
 public class Autobus implements TransportType {
     private String name;
@@ -17,18 +20,45 @@ public class Autobus implements TransportType {
 
     private final PublicTransportationSystem systemName;
 
-    private final List<Station> Stations;
-
     private final Hashtable<Station, Integer> stationsOnLine;
+    private ArrayList<LocalTime> schedule = new ArrayList<>();
+
+    public ArrayList<LocalTime> getSchedule() {
+        return schedule;
+    }
+
+    @Override
+    public void setSchedule(ArrayList<LocalTime> schedule) {
+        this.schedule = schedule;
+        this.sortSchedule();
+    }
+
+    @Override
+    public void sortSchedule() {
+        Collections.sort(schedule);
+    }
+
+
+    public void addSingleSchedule(LocalTime time){
+        this.schedule.add(time);
+        this.sortSchedule();
+    }
+
+    public void delSingleSchedule(LocalTime time){
+        this.schedule.remove(time);
+        this.sortSchedule();
+    }
+
+
 
     public Autobus(PublicTransportationSystem system) {
         this.type = Types.BUS;
-        this.name = name();
         this.systemName = system;
         this.number = setNumber(system);
+        this.name = name();
         this.amountOfStations = 0;
-        this.Stations = new ArrayList<>();
         this.stationsOnLine = new Hashtable<>();
+        system.addLines(this);
     }
 
 
@@ -43,16 +73,23 @@ public class Autobus implements TransportType {
         }
     }
     public Hashtable<Station, Integer> delStationOnLine(Station station) {
-        if (stationsOnLine().containsKey(station)) {
-            this.amountOfStations--;
-            this.stationsOnLine.remove(station);
-            station.delLines(this);
+        try {
+            if (stationsOnLine().containsKey(station)) {
+                this.amountOfStations--;
+                this.stationsOnLine.remove(station);
+                station.delLines(this);
+                return stationsOnLine;
+            }
+            else{
+                throw new FindException("Station not found on this line");
+
+                }
+        }
+        catch (FindException e){
             return stationsOnLine;
         }
-        else {
-            throw new FindException("Station is not present on this line");
-        }
     }
+
     @Override
     public String name() {
         if (this.type.equals(Types.BUS)) {
@@ -64,27 +101,32 @@ public class Autobus implements TransportType {
     @Override
     public int setNumber(PublicTransportationSystem system) {
         int number = 1;
-        int i = 0;
+        int i = 1;
+        List<TransportType> temp_buses = system.getLines();
+        List<Integer> numbers = new ArrayList<>();
+        for (TransportType bus: temp_buses) {
+            numbers.add(bus.number());
+        }
         while (i < 1000) {
-            if (this.systemName.getLines() == null || !this.systemName.getLines().contains(this)) {
+            if (temp_buses.size() == 0) {
                 return number;
-            } else {
+            } else if (numbers.contains(number)) {
                 number++;
                 i++;
+            }
+            else{
+                return number;
             }
         }
         throw new ArithmeticException("Too many lines in the system");
     }
 
-    @Override
-    public List<Station> stationNames() {
-        return Stations;
-    }
 
     @Override
     public Hashtable<Station, Integer> stationsOnLine() {
         return stationsOnLine;
     }
+
     @Override
     public boolean checkIfLineStationSameType(TransportType bus, Station station){
         return bus.type().equals(station.type());
@@ -119,13 +161,6 @@ public class Autobus implements TransportType {
 
     public int getNumber() {
         return number;
-    }
-    public List<Station> getStations() {
-        return Stations;
-    }
-
-    public void delStations(Station station){
-        this.Stations.remove(station);
     }
 
     public String toString(){
